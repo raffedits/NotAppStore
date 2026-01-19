@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>NotAppStore</title>
+  
+  <style>
+    :root {
+      --bg1: #071022;
+      --bg2: #0b1b34;
+      --card: rgba(255, 255, 255, 0.04);
+      --accent1: #68b8ff;
+      --accent2: #0ea5ff;
+      --text: #e7f6ff;
+      --muted: rgba(231, 246, 255, 0.65);
+      --glass: rgba(255, 255, 255, 0.03);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(135deg, var(--bg1), var(--bg2));
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      padding: 28px;
+      min-height: 100vh;
+    }
+
+    .wrap {
+      width: 100%;
+      max-width: 900px;
+      border-radius: 14px;
+      padding: 20px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+      box-shadow: 0 12px 40px rgba(2, 6, 23, 0.7);
+      backdrop-filter: blur(6px);
+    }
+
+    .hdr { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 18px; }
+    .brand { display: flex; gap: 12px; align-items: center; }
+    .logo-wrap { width: 56px; height: 56px; border-radius: 12px; overflow: hidden; flex-shrink: 0; }
+    .brand-text h1 { margin: 0; font-size: 20px; color: var(--accent1); }
+    .brand-text .muted { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+    .hdr-right { display: flex; align-items: center; gap: 10px; }
+    .search { display: flex; align-items: center; gap: 8px; background: var(--glass); padding: 8px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.03); }
+    .search input { background: transparent; border: 0; outline: none; color: var(--text); width: 220px; font-size: 14px; padding: 6px; }
+    .search .search-icon { color: var(--muted); }
+
+    .cards { display: flex; flex-direction: column; gap: 12px; }
+
+    .app-card {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      transition: box-shadow .12s, transform .12s;
+      overflow: hidden;
+    }
+    .app-card:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(2, 6, 23, 0.5); }
+    .app-header { display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
+    .app-title { font-weight: 700; color: var(--accent1); font-size: 16px; }
+    .app-sub { font-size: 13px; color: var(--muted); }
+
+    .expand { max-height: 0; overflow: hidden; transition: max-height .28s ease, padding .28s ease; }
+    .expand.open { max-height: 360px; padding-top: 12px; }
+
+    .desc { font-size: 14px; color: var(--muted); margin-bottom: 12px; }
+    .controls { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn { padding: 10px 12px; border-radius: 10px; border: 0; cursor: pointer; font-weight: 600; }
+    .btn.apk { background: linear-gradient(90deg, var(--accent2), var(--accent1)); color: #00233a; }
+    .btn.zip { background: transparent; border: 1px solid rgba(255, 255, 255, 0.06); color: var(--text); }
+    .small-note { font-size: 12px; color: var(--muted); margin-top: 8px; }
+
+    .footer { text-align: center; margin-top: 18px; color: var(--muted); font-size: 12px; }
+
+    @media (max-width: 640px) {
+      .search input { width: 130px; }
+      .wrap { padding: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="hdr">
+      <div class="brand">
+        <div class="logo-wrap" aria-hidden="true">
+          <svg id="notappstore-logo" width="56" height="56" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="NotAppStore logo">
+            <defs>
+              <linearGradient id="gA" x1="0" x2="1" y1="0" y2="1">
+                <stop offset="0" stop-color="#68b8ff"/>
+                <stop offset="1" stop-color="#0ea5ff"/>
+              </linearGradient>
+            </defs>
+            <rect rx="12" width="64" height="64" fill="url(#gA)"/>
+            <path d="M20 28 L32 40 L44 28" stroke="#00233a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+            <rect x="30" y="12" width="4" height="18" rx="2" fill="#00233a"/>
+          </svg>
+        </div>
+
+        <div class="brand-text">
+          <h1>NotAppStore</h1>
+          <p class="muted">Scarica APK — ricerca e versioni multiple</p>
+        </div>
+      </div>
+
+      <div class="hdr-right">
+        <label class="search">
+          <svg class="search-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+            <path fill="currentColor" d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79L20 21.49 21.49 20 15.5 14zM4 9.5C4 6.46 6.46 4 9.5 4S15 6.46 15 9.5 12.54 15 9.5 15 4 12.54 4 9.5z"/>
+          </svg>
+          <input id="searchInput" placeholder="Cerca app..." aria-label="Cerca app" />
+        </label>
+      </div>
+    </header>
+
+    <section id="appsList" class="cards" aria-live="polite">
+      </section>
+
+    <footer class="footer">
+      <small>NotAppStore — interfaccia minimal azzurra/blu</small>
+    </footer>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+  <script>
+    const apps = [
+      {
+        name: 'Brave Browser',
+        developer: 'Brave Software',
+        description: 'Browser veloce e privato.',
+        versions: [
+          { name: 'v1', apkUrl: 'https://drive.google.com/uc?export=download&id=1mtSWDYcfUxFlJhPYtBIlwcp3skuSRj94', zipUrl: null }
+        ]
+      },
+      {
+        name: 'Instagram',
+        developer: 'Meta',
+        description: 'Condividi foto e video.',
+        versions: [
+          { name: 'v1', apkUrl: 'https://drive.google.com/uc?export=download&id=1n3sCKBpnaKwcloh3XzuGbzxypwyrcwbk', zipUrl: null }
+        ]
+      },
+      {
+        name: 'TwoPlayerGamesChallenge',
+        developer: 'TwoPlayer Dev',
+        description: 'Sfida un amico in divertenti minigiochi locali.',
+        versions: [
+          { name: 'v1', apkUrl: 'https://drive.google.com/uc?export=download&id=17CuRGiDcNOr7m9vZxzf_UsJ3sqteASL4', zipUrl: null }
+        ]
+      },
+      {
+        name: 'Subway Surfers',
+        developer: 'SYBO / Kiloo',
+        description: 'Endless runner: corri, schiva treni e raccogli monete.',
+        versions: [
+          { name: '3.51.1', apkUrl: 'https://drive.google.com/uc?export=download&id=15rznlcW2WBtTYjxYtbZnF2msiA0_snyI', zipUrl: null },
+          { name: '3.52.1', apkUrl: 'https://drive.google.com/uc?export=download&id=1Vj-k-lCeRVCLm-HDGj85BWasygO6n_-7', zipUrl: null }
+        ]
+      },
+      {
+        name: 'CapCut',
+        developer: 'Bytedance',
+        description: 'Editor video facile da usare con effetti e filtri.',
+        versions: [
+          { name: '11.7.0', apkUrl: 'https://drive.google.com/uc?export=download&id=158VXsjMEPbeJbpzt2sv-HGin6ruSExO3', zipUrl: null }
+        ]
+      },
+      {
+        name: 'SAI APK Downloader',
+        developer: 'SAI Dev',
+        description: 'Tool per scaricare e gestire APK.',
+        versions: [
+          { name: 'v1', apkUrl: 'https://drive.google.com/uc?export=download&id=1YCLIfGqKB4z0v0ZrZqN3rDnb2jnIi1Vk', zipUrl: null }
+        ]
+      },
+      {
+        name: 'Mario Kart Tour',
+        developer: 'Nintendo',
+        description: 'Corri con i tuoi personaggi preferiti in gare frenetiche.',
+        versions: [
+          { name: '3.6.3', apkUrl: 'https://drive.google.com/uc?export=download&id=1hhb-wVtuXUJ8zFBULGI26ypiRsPi-HM-', zipUrl: null }
+        ]
+      },
+      {
+        name: 'RunBally',
+        developer: 'raffedits',
+        description: 'Colleziona monete schivando gli ostacoli!',
+        versions: [
+          { name: '1.0.0', apkUrl: 'https://drive.google.com/uc?export=download&id=1Bthp280Pl2UrSp0WpzhBVwM7pJyf3Lth', zipUrl: null }
+        ]
+      },
+      {
+        name: 'Brawl Stars',
+        developer: 'Supercell',
+        description: 'Arena multiplayer con eroi unici e battaglie veloci.',
+        versions: [
+          { name: '62.264', apkUrl: 'https://drive.google.com/uc?export=download&id=1xz4qhfDYPOoZ30O68WFHBY3HP4ScZEp7', zipUrl: null },
+          { name: '63.286', apkUrl: 'https://drive.google.com/uc?export=download&id=1mjXmXFU4qW5wj87C-TijaCtDdq_C_QSh', zipUrl: null }
+        ]
+      },
+      {
+        name: 'TinyFun',
+        developer: 'Tiny Dev',
+        description: 'Collection di mini-giochi divertenti.',
+        versions: [
+          { name: '3.00', apkUrl: 'https://drive.google.com/uc?export=download&id=1eRIMn8sxCkIgRHxYxZpAHUxcDI6Go9pU', zipUrl: null }
+        ]
+      },
+      {
+        name: 'TikTok',
+        developer: 'TikTok Pte. Ltd.',
+        description: 'Crea e scopri brevi video virali e divertenti.',
+        versions: [
+          { name: '41.5.4', apkUrl: 'https://drive.google.com/uc?export=download&id=1O1OlcecFc2FOOfQagwLYqJ0mCPelCsnu', zipUrl: null }
+        ]
+      },
+      {
+        name: 'Adrenalyn XL Azzurri',
+        developer: 'Panini / Adrenalyn',
+        description: 'Gioco/collezione Adrenalyn XL Azzurri.',
+        versions: [
+          { name: '1.2.2', apkUrl: 'https://drive.google.com/uc?export=download&id=1QAeGymmwMQdRYyHEnOvewFsVWyOiqshR', zipUrl: null }
+        ]
+      }
+    ];
+
+    const appsList = document.getElementById('appsList');
+    const searchInput = document.getElementById('searchInput');
+
+    function escapeHtml(text) {
+      return String(text).replace(/[&<>"']/g, function (m) {
+        return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[m];
+      });
+    }
+
+    function startDownload(url) {
+      const win = window.open('about:blank');
+      win.document.write(`
+        <html>
+          <body style="background:#071022;color:#68b8ff;display:flex;justify-content:center;align-items:center;height:100vh;font-family:sans-serif;">
+            <p>Avvio download...</p>
+            <script>
+              window.location.href = "${url}";
+            <\/script>
+          </body>
+        </html>
+      `);
+    }
+
+    function createCard(app) {
+      const card = document.createElement('article');
+      card.className = 'app-card';
+
+      const header = document.createElement('div');
+      header.className = 'app-header';
+      header.innerHTML = `
+        <div>
+          <div class="app-title">${escapeHtml(app.name)}</div>
+          <div class="app-sub">${escapeHtml(app.developer)}</div>
+        </div>
+        <div class="chev">▾</div>
+      `;
+      card.appendChild(header);
+
+      const expand = document.createElement('div');
+      expand.className = 'expand';
+
+      const desc = document.createElement('div');
+      desc.className = 'desc';
+      desc.textContent = app.description;
+      expand.appendChild(desc);
+
+      const controls = document.createElement('div');
+      controls.className = 'controls';
+
+      app.versions.forEach(v => {
+        const apkBtn = document.createElement('button');
+        apkBtn.className = 'btn apk';
+        apkBtn.type = 'button';
+        apkBtn.textContent = `${v.name} APK`;
+        apkBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          startDownload(v.apkUrl);
+        });
+        controls.appendChild(apkBtn);
+
+        const zipBtn = document.createElement('button');
+        zipBtn.className = 'btn zip';
+        zipBtn.type = 'button';
+        zipBtn.textContent = `${v.name} ZIP`;
+        zipBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (v.zipUrl) startDownload(v.zipUrl);
+          else startDownload(v.apkUrl);
+        });
+        controls.appendChild(zipBtn);
+      });
+
+      expand.appendChild(controls);
+      card.appendChild(expand);
+
+      header.addEventListener('click', () => {
+        const isOpen = expand.classList.toggle('open');
+        header.querySelector('.chev').textContent = isOpen ? '▴' : '▾';
+        if (isOpen) {
+          setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'center' }), 120);
+        }
+      });
+
+      appsList.appendChild(card);
+    }
+
+    function renderApps(filter = '') {
+      appsList.innerHTML = '';
+      const q = (filter || '').trim().toLowerCase();
+      const filtered = apps.filter(a => 
+        a.name.toLowerCase().includes(q) || 
+        a.developer.toLowerCase().includes(q)
+      );
+      filtered.forEach(createCard);
+    }
+
+    searchInput.addEventListener('input', () => renderApps(searchInput.value));
+
+    renderApps();
+  </script>
+</body>
+</html>
